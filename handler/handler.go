@@ -83,7 +83,7 @@ func FaasReceiptHandler(c echo.Context) error {
 	}
 	data, _ := json.Marshal(body)
 
-	method := strings.ToUpper(http.MethodPost)
+	method := strings.ToUpper(http.MethodGet)
 	path := "/v1/faas/receipt"
 	nonce := randFunc()
 	timestamp := strconv.FormatInt(time.Now().Unix(), 10)
