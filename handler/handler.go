@@ -122,6 +122,8 @@ func FaasReceiptHandler(c echo.Context) error {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
 
+	fmt.Println("resp:", string(respbody))
+
 	var apiRes model.ApiResponseFaasReceipt
 	err = json.Unmarshal(respbody, &apiRes)
 	if err != nil {

@@ -1,7 +1,5 @@
 package model
 
-import "time"
-
 type RequestBodyPay struct {
 	OrderID  *string  `json:"order_id,omitempty"`
 	Amount   *float64 `json:"amount,omitempty"`
@@ -15,26 +13,26 @@ type ResponseBodyPay struct {
 }
 
 type FaasPaymentReceipt struct {
-	PaymentID string    `json:"payment_id"`
-	OrderID   *string   `json:"order_id,omitempty"`
-	UserID    string    `json:"user_id"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	PaymentID string  `json:"payment_id"`
+	OrderID   *string `json:"order_id,omitempty"`
+	UserID    string  `json:"user_id"`
+	CreatedAt int64   `json:"created_at"`
+	UpdatedAt int64   `json:"updated_at"`
 
 	Withdrawal FaasWithdrawal `json:"withdrawal"`
 }
 
 type FaasWithdrawal struct {
-	Status      string     `json:"status"`
-	CompletedAt *time.Time `json:"completed_at"`
-	Amount      string     `json:"amount"`
-	Fee         string     `json:"fee"`
-	Currency    string     `json:"currency"`
-	FeeCurrency string     `json:"fee_currency"`
-	Address     string     `json:"address,omitempty"`
-	Chain       string     `json:"chain,omitempty"`
-	TxID        *string    `json:"tx_id,omitempty"`
-	IsDeduction bool       `json:"is_deduction,omitempty"`
+	Status      string  `json:"status"`
+	CompletedAt *int64  `json:"completed_at"`
+	Amount      string  `json:"amount"`
+	Fee         string  `json:"fee"`
+	Currency    string  `json:"currency"`
+	FeeCurrency string  `json:"fee_currency"`
+	Address     string  `json:"address,omitempty"`
+	Chain       string  `json:"chain,omitempty"`
+	TxID        *string `json:"tx_id,omitempty"`
+	IsDeduction bool    `json:"is_deduction,omitempty"`
 }
 
 type ApiResponseFaasReceipt struct {
