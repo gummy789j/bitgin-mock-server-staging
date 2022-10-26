@@ -89,7 +89,7 @@ func FaasReceiptHandler(c echo.Context) error {
 
 	log.Printf("key:%s&sign:%s&nonce:%s&timestamp:%s", config.Key, signature, nonce, timestamp)
 
-	req, err := http.NewRequest("GET", config.Backend_Endpoint+path, nil)
+	req, err := http.NewRequest(http.MethodGet, config.Backend_Endpoint+path, nil)
 	if err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
