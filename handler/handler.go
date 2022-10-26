@@ -76,19 +76,12 @@ func FaasPayHandler(c echo.Context) error {
 
 func FaasReceiptHandler(c echo.Context) error {
 
-	body := model.RequestBodyReceipt{}
-	if err := c.Bind(&body); err != nil {
-		log.Println("error: ", err.Error())
-		return c.String(http.StatusBadRequest, err.Error())
-	}
-	data, _ := json.Marshal(body)
-
 	method := strings.ToUpper(http.MethodGet)
 	path := "/v1/faas/receipt"
 	nonce := randFunc()
 	timestamp := strconv.FormatInt(time.Now().Unix(), 10)
 
-	payload := fmt.Sprintf("%s%s%s%s%s", method, path, nonce, timestamp, string(data))
+	payload := fmt.Sprintf("%s%s%s%s", method, path, nonce, timestamp)
 	fmt.Println("payload: ", payload)
 
 	signature := sign(payload)
@@ -96,10 +89,12 @@ func FaasReceiptHandler(c echo.Context) error {
 
 	log.Printf("key:%s&sign:%s&nonce:%s&timestamp:%s", config.Key, signature, nonce, timestamp)
 
-	req, err := http.NewRequest("GET", config.Backend_Endpoint+path, bytes.NewBuffer(data))
+	req, err := http.NewRequest("GET", config.Backend_Endpoint+path, nil)
 	if err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
+
+	req.URL.RawQuery = c.Request().URL.Query().Encode()
 
 	reqHeader := map[string]string{
 		"BG-API-KEY":       config.Key,
