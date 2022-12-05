@@ -23,7 +23,7 @@ import (
 )
 
 func sign(payload string) string {
-	hash := hmac.New(sha256.New, []byte(config.Secret))
+	hash := hmac.New(sha256.New, []byte(config.GetConfig().Secret))
 	hash.Write([]byte(payload))
 	signature := hex.EncodeToString(hash.Sum(nil))
 	return signature
@@ -59,7 +59,7 @@ func FaasPayHandler(c echo.Context) error {
 
 	u, _ := url.Parse(config.Frontend_Endpoint)
 	q := u.Query()
-	q.Add("key", config.Key)
+	q.Add("key", config.GetConfig().Key)
 	q.Add("sign", signature)
 	q.Add("nonce", nonce)
 	q.Add("timestamp", timestamp)
@@ -87,9 +87,9 @@ func FaasReceiptHandler(c echo.Context) error {
 	signature := sign(payload)
 	fmt.Println("signature: ", signature)
 
-	log.Printf("key:%s&sign:%s&nonce:%s&timestamp:%s", config.Key, signature, nonce, timestamp)
+	log.Printf("key:%s&sign:%s&nonce:%s&timestamp:%s", config.GetConfig().Key, signature, nonce, timestamp)
 
-	req, err := http.NewRequest(http.MethodGet, config.Backend_Endpoint+path, nil)
+	req, err := http.NewRequest(http.MethodGet, config.GetConfig().BackendEndpoint+path, nil)
 	if err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
@@ -97,7 +97,7 @@ func FaasReceiptHandler(c echo.Context) error {
 	req.URL.RawQuery = c.Request().URL.Query().Encode()
 
 	reqHeader := map[string]string{
-		"BG-API-KEY":       config.Key,
+		"BG-API-KEY":       config.GetConfig().Key,
 		"BG-API-SIGN":      signature,
 		"BG-API-NONCE":     nonce,
 		"BG-API-TIMESTAMP": timestamp,
@@ -154,15 +154,15 @@ func MineQueryAddressesHandler(c echo.Context) error {
 	signature := sign(payload)
 	fmt.Println("signature: ", signature)
 
-	log.Printf("key:%s&sign:%s&nonce:%s&timestamp:%s", config.Key, signature, nonce, timestamp)
+	log.Printf("key:%s&sign:%s&nonce:%s&timestamp:%s", config.GetConfig().Key, signature, nonce, timestamp)
 
-	req, err := http.NewRequest("POST", config.Backend_Endpoint+path, bytes.NewBuffer(data))
+	req, err := http.NewRequest("POST", config.GetConfig().BackendEndpoint+path, bytes.NewBuffer(data))
 	if err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
 
 	reqHeader := map[string]string{
-		"BG-API-KEY":       config.Key,
+		"BG-API-KEY":       config.GetConfig().Key,
 		"BG-API-SIGN":      signature,
 		"BG-API-NONCE":     nonce,
 		"BG-API-TIMESTAMP": timestamp,
@@ -216,15 +216,15 @@ func MineShareHandler(c echo.Context) error {
 	signature := sign(payload)
 	fmt.Println("signature: ", signature)
 
-	log.Printf("key:%s&sign:%s&nonce:%s&timestamp:%s", config.Key, signature, nonce, timestamp)
+	log.Printf("key:%s&sign:%s&nonce:%s&timestamp:%s", config.GetConfig().Key, signature, nonce, timestamp)
 
-	req, err := http.NewRequest("POST", config.Backend_Endpoint+path, bytes.NewBuffer(data))
+	req, err := http.NewRequest("POST", config.GetConfig().BackendEndpoint+path, bytes.NewBuffer(data))
 	if err != nil {
 		return c.String(http.StatusBadRequest, err.Error())
 	}
 
 	reqHeader := map[string]string{
-		"BG-API-KEY":       config.Key,
+		"BG-API-KEY":       config.GetConfig().Key,
 		"BG-API-SIGN":      signature,
 		"BG-API-NONCE":     nonce,
 		"BG-API-TIMESTAMP": timestamp,
